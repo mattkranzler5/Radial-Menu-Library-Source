@@ -16,10 +16,11 @@ public class SemiCircularRadialMenuItem {
 	private int mMenuSelectedColor;
 	private int mTextColor;
 	private Path mPath;
+	private Path mBorderPath;
 	private RectF mBounds;
 	private OnSemiCircularRadialMenuPressed mCallback;
 	private int mIconDimen;
-	
+
 	public interface OnSemiCircularRadialMenuPressed {
 		public void onMenuItemPressed();
 	}
@@ -39,9 +40,10 @@ public class SemiCircularRadialMenuItem {
 		this.mTextColor = Color.BLACK;
 		this.mIconDimen = 64;
 		mPath = new Path();
+		mBorderPath = new Path();
 		mBounds = new RectF();
 	}
-		
+
 	/**
 	 * @return the mTextColor
 	 */
@@ -50,7 +52,8 @@ public class SemiCircularRadialMenuItem {
 	}
 
 	/**
-	 * @param mTextColor the mTextColor to set
+	 * @param mTextColor
+	 *            the mTextColor to set
 	 */
 	public void setTextColor(int mTextColor) {
 		this.mTextColor = mTextColor;
@@ -62,7 +65,7 @@ public class SemiCircularRadialMenuItem {
 	public String getMenuID() {
 		return mMenuID;
 	}
-	
+
 	/**
 	 * @return the mIconDimen
 	 */
@@ -71,7 +74,8 @@ public class SemiCircularRadialMenuItem {
 	}
 
 	/**
-	 * @param mIconDimen the mIconDimen to set
+	 * @param mIconDimen
+	 *            the mIconDimen to set
 	 */
 	public void setIconDimen(int mIconDimen) {
 		this.mIconDimen = mIconDimen;
@@ -82,6 +86,10 @@ public class SemiCircularRadialMenuItem {
 	 */
 	public Path getMenuPath() {
 		return mPath;
+	}
+
+	public Path getBorderPath() {
+		return mBorderPath;
 	}
 
 	/**
@@ -97,28 +105,35 @@ public class SemiCircularRadialMenuItem {
 	 */
 	public void setMenuPath(RectF menuButtonRect, RectF menuRect, float StartArc, float ArcWidth, float radius, Point anchorPoint) {
 		int left, right, top, bottom;
-		left = right = top = bottom= 0;
-		//Draw the widget path
+		left = right = top = bottom = 0;
+		// Draw the widget path
 		mPath.arcTo(menuRect, StartArc, ArcWidth);
 		mPath.arcTo(menuButtonRect, StartArc + ArcWidth, -ArcWidth);
 		mPath.close();
 		mPath.computeBounds(mBounds, true);
-		//Get the drawable bounds
-		Point drawableCenter = pointOnCircle((radius - (radius/5)), 
-				StartArc + (ArcWidth/2),
-				anchorPoint);
-		left = (int) drawableCenter.x - (mIconDimen/2);
-		top = (int) drawableCenter.y - (mIconDimen/2);
+
+		// Get the drawable bounds
+		Point drawableCenter = pointOnCircle((radius - (radius / 4)), StartArc + (ArcWidth / 2), anchorPoint);
+		left = (int) drawableCenter.x - (mIconDimen / 2);
+		top = (int) drawableCenter.y - (mIconDimen / 2);
 		right = left + (mIconDimen);
 		bottom = top + (mIconDimen);
 		mIcon.setBounds(left, top, right, bottom);
 	}
-	
-	private Point pointOnCircle(float radius, float angleInDegrees, Point origin) {    
-        int x = (int)(radius * Math.cos(angleInDegrees * Math.PI / 180F)) + origin.x;
-        int y = (int)(radius * Math.sin(angleInDegrees * Math.PI / 180F)) + origin.y;
-        return new Point(x, y);
-    }
+
+	public void setBorderPath(RectF menuButtonRect, RectF menuRect, float StartArc, float ArcWidth, float radius,
+			Point anchorPoint) {
+		mBorderPath.arcTo(new RectF(menuRect.left+2, menuRect.top-2, menuRect.right+2, menuRect.bottom+2), StartArc, ArcWidth);
+		mBorderPath.arcTo(menuButtonRect, StartArc + ArcWidth, -ArcWidth);
+		mBorderPath.close();
+
+	}
+
+	private Point pointOnCircle(float radius, float angleInDegrees, Point origin) {
+		int x = (int) (radius * Math.cos(angleInDegrees * Math.PI / 180F)) + origin.x;
+		int y = (int) (radius * Math.sin(angleInDegrees * Math.PI / 180F)) + origin.y;
+		return new Point(x, y);
+	}
 
 	/**
 	 * @return the mIcon
@@ -135,7 +150,8 @@ public class SemiCircularRadialMenuItem {
 	}
 
 	/**
-	 * @param mCallback the mCallback to set
+	 * @param mCallback
+	 *            the mCallback to set
 	 */
 	public void setOnSemiCircularRadialMenuPressed(OnSemiCircularRadialMenuPressed mCallback) {
 		this.mCallback = mCallback;
@@ -147,14 +163,14 @@ public class SemiCircularRadialMenuItem {
 	public OnSemiCircularRadialMenuPressed getCallback() {
 		return mCallback;
 	}
-	
+
 	/**
 	 * @return the mColor
 	 */
 	public int getBackgroundColor() {
 		return mBackgroundColor;
 	}
-	
+
 	public void setBackgroundColor(int color) {
 		this.mBackgroundColor = color;
 	}
@@ -167,10 +183,12 @@ public class SemiCircularRadialMenuItem {
 	}
 
 	/**
-	 * @param mMenuNormalColor the mMenuNormalColor to set
+	 * @param mMenuNormalColor
+	 *            the mMenuNormalColor to set
 	 */
 	public void setMenuNormalColor(int mMenuNormalColor) {
 		this.mMenuNormalColor = mMenuNormalColor;
+		this.mBackgroundColor = mMenuNormalColor;
 	}
 
 	/**
@@ -181,7 +199,8 @@ public class SemiCircularRadialMenuItem {
 	}
 
 	/**
-	 * @param mMenuSelectedColor the mMenuSelectedColor to set
+	 * @param mMenuSelectedColor
+	 *            the mMenuSelectedColor to set
 	 */
 	public void setMenuSelectedColor(int mMenuSelectedColor) {
 		this.mMenuSelectedColor = mMenuSelectedColor;
